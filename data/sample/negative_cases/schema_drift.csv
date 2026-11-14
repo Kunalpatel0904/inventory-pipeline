@@ -1,0 +1,2 @@
+movement_id,movement_type,product_id,location_id,dest_location_id,qty,effective_date,recorded_at,notes
+DRIFT000,receipt,P0001,L01,,10,2026-01-01,2026-01-01T09:00:00Z,renamed column

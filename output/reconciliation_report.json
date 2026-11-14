@@ -1,0 +1,175 @@
+{
+  "end_date": "2026-01-30",
+  "all_passed": true,
+  "errors_failed": 0,
+  "checks": [
+    {
+      "check": "file_row_accounting",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "severity": "error",
+      "detail": "every SUCCESS file: rows_read = loaded + skipped_existing + rejected"
+    },
+    {
+      "check": "ledger_count_equals_loaded_rows",
+      "passed": true,
+      "expected": 1000,
+      "actual": 1000,
+      "severity": "error",
+      "detail": "sum(file_load.rows_loaded) == COUNT(inventory_movement)"
+    },
+    {
+      "check": "ledger_rows_traceable",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "severity": "error",
+      "detail": "every movement has run_id + source_file + source_line"
+    },
+    {
+      "check": "rejects_traceable",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "severity": "error",
+      "detail": "every reject has run_id + source_file + line + raw_record"
+    },
+    {
+      "check": "referential_integrity_movements",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "severity": "error",
+      "detail": "movement keys exist in dimensions"
+    },
+    {
+      "check": "referential_integrity_legs",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "severity": "error",
+      "detail": "every leg belongs to a movement"
+    },
+    {
+      "check": "leg_count",
+      "passed": true,
+      "expected": 1136,
+      "actual": 1136,
+      "severity": "error",
+      "detail": "legs = movements + transfers (transfer has 2 legs)"
+    },
+    {
+      "check": "transfer_conservation",
+      "passed": true,
+      "expected": 34097,
+      "actual": 34097,
+      "severity": "error",
+      "detail": "total transferred out == total transferred in"
+    },
+    {
+      "check": "aggregate_receipt",
+      "passed": true,
+      "expected": 1118024,
+      "actual": 1118024,
+      "severity": "error",
+      "detail": "sum(leg receipt) == sum(daily_balance.receipt_qty)"
+    },
+    {
+      "check": "aggregate_issue",
+      "passed": true,
+      "expected": 70145,
+      "actual": 70145,
+      "severity": "error",
+      "detail": "sum(leg issue) == sum(daily_balance.issue_qty)"
+    },
+    {
+      "check": "aggregate_transfer_in",
+      "passed": true,
+      "expected": 34097,
+      "actual": 34097,
+      "severity": "error",
+      "detail": "sum(leg transfer_in) == sum(daily_balance.transfer_in_qty)"
+    },
+    {
+      "check": "aggregate_transfer_out",
+      "passed": true,
+      "expected": 34097,
+      "actual": 34097,
+      "severity": "error",
+      "detail": "sum(leg transfer_out) == sum(daily_balance.transfer_out_qty)"
+    },
+    {
+      "check": "aggregate_adjustment",
+      "passed": true,
+      "expected": 487,
+      "actual": 487,
+      "severity": "error",
+      "detail": "sum(leg adjustment) == sum(daily_balance.adjustment_qty)"
+    },
+    {
+      "check": "balance_arithmetic",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "severity": "error",
+      "detail": "closing = opening + in - out on every row"
+    },
+    {
+      "check": "balance_continuity",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "severity": "error",
+      "detail": "opening(d) == closing(d-1)"
+    },
+    {
+      "check": "first_day_opening_is_zero",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "severity": "error",
+      "detail": "a pair's first row opens at 0"
+    },
+    {
+      "check": "balance_dense_to_end_date",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "severity": "error",
+      "detail": "no missing days; every pair reaches the global end date"
+    },
+    {
+      "check": "closing_equals_ledger_sum",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "severity": "error",
+      "detail": "closing at end date == SUM(signed_qty) per pair (independent path)"
+    },
+    {
+      "check": "pair_coverage",
+      "passed": true,
+      "expected": 40,
+      "actual": 40,
+      "severity": "error",
+      "detail": "every ledger pair has balance rows"
+    },
+    {
+      "check": "negative_closing_balance_rows",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "severity": "warning",
+      "detail": "kept (not rejected): flags oversold / late-recorded data for review"
+    },
+    {
+      "check": "backdated_movements_loaded",
+      "passed": true,
+      "expected": null,
+      "actual": 50,
+      "severity": "info",
+      "detail": "movements whose effective_date preceded the balance end date at load time"
+    }
+  ]
+}

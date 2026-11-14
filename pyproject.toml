@@ -1,0 +1,23 @@
+[project]
+name = "inventory-pipeline"
+version = "1.0.0"
+description = "Inventory movement ledger -> daily balances pipeline with reconciliation and backdated-correction handling"
+requires-python = ">=3.10"
+dependencies = []            # standard library only (sqlite3, csv, argparse, logging)
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+inventory-pipeline = "inventory_pipeline.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

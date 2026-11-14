@@ -1,0 +1,2 @@
+run_id,started_at,ended_at,status,files_total,files_succeeded,files_failed,files_skipped,rows_read,rows_loaded,rows_skipped_existing,rows_rejected,backdated_loaded,pairs_rebuilt,balance_rows_written,error,params_json
+run_20261114T165437Z_e657deb3,2026-11-14T16:54:37Z,2026-11-14T16:54:37Z,SUCCESS,2,2,0,0,1033,1000,1,32,50,63,1619,,"{""input_paths"": [""data/sample/incoming""], ""reference_dir"": ""data/sample/reference"", ""force"": false, ""strategy"": ""naive""}"

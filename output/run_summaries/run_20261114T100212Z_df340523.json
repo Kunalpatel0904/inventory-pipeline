@@ -1,0 +1,51 @@
+{
+  "run_id": "run_20261114T100212Z_df340523",
+  "status": "FAILED",
+  "started_at": "2026-11-14T10:02:12Z",
+  "ended_at": "2026-11-14T10:02:12Z",
+  "reference": {},
+  "files": [
+    {
+      "source_file": "empty_batch.csv",
+      "file_sha256": "5cdbdf1b42eb77d4183a33fcfcd8a6fc1a948900f77da69b125acc5b3195ca90",
+      "status": "EMPTY_BATCH",
+      "rows_read": 0,
+      "rows_loaded": 0,
+      "rows_skipped_existing": 0,
+      "rows_rejected": 0,
+      "backdated_loaded": 0,
+      "pairs_rebuilt": 0,
+      "balance_rows_written": 0,
+      "error": null,
+      "warnings": [],
+      "timings_s": {
+        "read_validate": 0.0005285890000550353
+      }
+    },
+    {
+      "source_file": "schema_drift.csv",
+      "file_sha256": "3404f6414d78bb887fecbc7486c433bb4eb83617b408be26d8c469f833ac54db",
+      "status": "FAILED_SCHEMA",
+      "rows_read": 0,
+      "rows_loaded": 0,
+      "rows_skipped_existing": 0,
+      "rows_rejected": 0,
+      "backdated_loaded": 0,
+      "pairs_rebuilt": 0,
+      "balance_rows_written": 0,
+      "error": "SchemaError: missing required column(s): ['quantity']; found: ['movement_id', 'movement_type', 'product_id', 'location_id', 'dest_location_id', 'qty', 'effective_date', 'recorded_at', 'notes']",
+      "warnings": [],
+      "timings_s": {}
+    }
+  ],
+  "error": "schema_drift.csv: SchemaError: missing required column(s): ['quantity']; found: ['movement_id', 'movement_type', 'product_id', 'location_id', 'dest_location_id', 'qty', 'effective_date', 'recorded_at', 'notes']",
+  "totals": {
+    "rows_read": 0,
+    "rows_loaded": 0,
+    "rows_skipped_existing": 0,
+    "rows_rejected": 0,
+    "backdated_loaded": 0,
+    "pairs_rebuilt": 0,
+    "balance_rows_written": 0
+  }
+}

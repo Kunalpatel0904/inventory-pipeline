@@ -1,0 +1,62 @@
+{
+  "run_id": "run_20261114T100211Z_077cc186",
+  "status": "SUCCESS",
+  "started_at": "2026-11-14T10:02:11Z",
+  "ended_at": "2026-11-14T10:02:11Z",
+  "reference": {
+    "products_loaded": 10,
+    "products_rejected": 0,
+    "locations_loaded": 4,
+    "locations_rejected": 0
+  },
+  "files": [
+    {
+      "source_file": "movements_batch_001.csv",
+      "file_sha256": "5ad7b931ff6d0c806e873d3dd47da960201cc2f313fbb5a92195f99f2c10a1f7",
+      "status": "SUCCESS",
+      "rows_read": 980,
+      "rows_loaded": 950,
+      "rows_skipped_existing": 0,
+      "rows_rejected": 30,
+      "backdated_loaded": 0,
+      "pairs_rebuilt": 40,
+      "balance_rows_written": 1162,
+      "error": null,
+      "warnings": [],
+      "timings_s": {
+        "read_validate": 0.008264888999974573,
+        "load": 0.009944628999960514,
+        "rebuild_balances": 0.004444070999966243
+      }
+    },
+    {
+      "source_file": "movements_batch_002_late.csv",
+      "file_sha256": "fdda80137cfe49ab9c40bf7c539b97833970be24f5c5e85968bdb1f4ca0d3a01",
+      "status": "SUCCESS",
+      "rows_read": 53,
+      "rows_loaded": 50,
+      "rows_skipped_existing": 1,
+      "rows_rejected": 2,
+      "backdated_loaded": 50,
+      "pairs_rebuilt": 23,
+      "balance_rows_written": 457,
+      "error": null,
+      "warnings": [],
+      "timings_s": {
+        "read_validate": 0.0006639749999521882,
+        "load": 0.0005343159999711133,
+        "rebuild_balances": 0.0018972259999827656
+      }
+    }
+  ],
+  "error": null,
+  "totals": {
+    "rows_read": 1033,
+    "rows_loaded": 1000,
+    "rows_skipped_existing": 1,
+    "rows_rejected": 32,
+    "backdated_loaded": 50,
+    "pairs_rebuilt": 63,
+    "balance_rows_written": 1619
+  }
+}

@@ -1,0 +1,26 @@
+2026-11-14 10:02:11,859 INFO    run_id=run_20261114T100211Z_077cc186 run started params={'input_paths': ['data/sample/incoming'], 'reference_dir': 'data/sample/reference', 'force': False, 'strategy': 'naive'}
+2026-11-14 10:02:11,859 INFO    run_id=run_20261114T100211Z_077cc186 reference products.csv: loaded=10 rejected=0
+2026-11-14 10:02:11,859 INFO    run_id=run_20261114T100211Z_077cc186 reference locations.csv: loaded=4 rejected=0
+2026-11-14 10:02:11,883 INFO    run_id=run_20261114T100211Z_077cc186 file=movements_batch_001.csv status=SUCCESS read=980 loaded=950 skipped_existing=0 rejected=30 backdated=0 pairs_rebuilt=40 balance_rows=1162
+2026-11-14 10:02:11,886 INFO    run_id=run_20261114T100211Z_077cc186 file=movements_batch_002_late.csv status=SUCCESS read=53 loaded=50 skipped_existing=1 rejected=2 backdated=50 pairs_rebuilt=23 balance_rows=457
+2026-11-14 10:02:11,887 INFO    run_id=run_20261114T100211Z_077cc186 run finished status=SUCCESS totals={'rows_read': 1033, 'rows_loaded': 1000, 'rows_skipped_existing': 1, 'rows_rejected': 32, 'backdated_loaded': 50, 'pairs_rebuilt': 63, 'balance_rows_written': 1619} error=None
+2026-11-14 10:02:11,946 INFO    run_id=run_20261114T100211Z_54253cf5 run started params={'input_paths': ['data/sample/incoming'], 'reference_dir': 'data/sample/reference', 'force': False, 'strategy': 'naive'}
+2026-11-14 10:02:11,946 INFO    run_id=run_20261114T100211Z_54253cf5 reference products.csv: loaded=10 rejected=0
+2026-11-14 10:02:11,946 INFO    run_id=run_20261114T100211Z_54253cf5 reference locations.csv: loaded=4 rejected=0
+2026-11-14 10:02:11,947 INFO    run_id=run_20261114T100211Z_54253cf5 file=movements_batch_001.csv skipped: identical content (sha256 5ad7b931ff6d...) already loaded
+2026-11-14 10:02:11,947 INFO    run_id=run_20261114T100211Z_54253cf5 file=movements_batch_002_late.csv skipped: identical content (sha256 fdda80137cfe...) already loaded
+2026-11-14 10:02:11,947 INFO    run_id=run_20261114T100211Z_54253cf5 run finished status=NOOP totals={'rows_read': 0, 'rows_loaded': 0, 'rows_skipped_existing': 0, 'rows_rejected': 0, 'backdated_loaded': 0, 'pairs_rebuilt': 0, 'balance_rows_written': 0} error=None
+2026-11-14 10:02:12,003 INFO    run_id=run_20261114T100212Z_ef8d949a run started params={'input_paths': ['data/sample/incoming'], 'reference_dir': None, 'force': True, 'strategy': 'naive'}
+2026-11-14 10:02:12,014 INFO    run_id=run_20261114T100212Z_ef8d949a file=movements_batch_001.csv status=SUCCESS read=980 loaded=0 skipped_existing=950 rejected=30 backdated=0 pairs_rebuilt=0 balance_rows=0
+2026-11-14 10:02:12,015 INFO    run_id=run_20261114T100212Z_ef8d949a file=movements_batch_002_late.csv status=SUCCESS read=53 loaded=0 skipped_existing=51 rejected=2 backdated=0 pairs_rebuilt=0 balance_rows=0
+2026-11-14 10:02:12,015 INFO    run_id=run_20261114T100212Z_ef8d949a run finished status=SUCCESS totals={'rows_read': 1033, 'rows_loaded': 0, 'rows_skipped_existing': 1001, 'rows_rejected': 32, 'backdated_loaded': 0, 'pairs_rebuilt': 0, 'balance_rows_written': 0} error=None
+2026-11-14 10:02:12,080 INFO    run_id=run_20261114T100212Z_df340523 run started params={'input_paths': ['data/sample/negative_cases'], 'reference_dir': None, 'force': False, 'strategy': 'naive'}
+2026-11-14 10:02:12,081 INFO    run_id=run_20261114T100212Z_df340523 file=empty_batch.csv empty batch (header only): nothing to do
+2026-11-14 10:02:12,082 ERROR   run_id=run_20261114T100212Z_df340523 file=schema_drift.csv FAILED_SCHEMA: SchemaError: missing required column(s): ['quantity']; found: ['movement_id', 'movement_type', 'product_id', 'location_id', 'dest_location_id', 'qty', 'effective_date', 'recorded_at', 'notes']
+2026-11-14 10:02:12,082 INFO    run_id=run_20261114T100212Z_df340523 run finished status=FAILED totals={'rows_read': 0, 'rows_loaded': 0, 'rows_skipped_existing': 0, 'rows_rejected': 0, 'backdated_loaded': 0, 'pairs_rebuilt': 0, 'balance_rows_written': 0} error=schema_drift.csv: SchemaError: missing required column(s): ['quantity']; found: ['movement_id', 'movement_type', 'product_id', 'location_id', 'dest_location_id', 'qty', 'effective_date', 'recorded_at', 'notes']
+2026-11-14 22:24:37,440 INFO    run_id=run_20261114T165437Z_e657deb3 run started params={'input_paths': ['data/sample/incoming'], 'reference_dir': 'data/sample/reference', 'force': False, 'strategy': 'naive'}
+2026-11-14 22:24:37,452 INFO    run_id=run_20261114T165437Z_e657deb3 reference products.csv: loaded=10 rejected=0
+2026-11-14 22:24:37,464 INFO    run_id=run_20261114T165437Z_e657deb3 reference locations.csv: loaded=4 rejected=0
+2026-11-14 22:24:37,524 INFO    run_id=run_20261114T165437Z_e657deb3 file=movements_batch_001.csv status=SUCCESS read=980 loaded=950 skipped_existing=0 rejected=30 backdated=0 pairs_rebuilt=40 balance_rows=1162
+2026-11-14 22:24:37,543 INFO    run_id=run_20261114T165437Z_e657deb3 file=movements_batch_002_late.csv status=SUCCESS read=53 loaded=50 skipped_existing=1 rejected=2 backdated=50 pairs_rebuilt=23 balance_rows=457
+2026-11-14 22:24:37,543 INFO    run_id=run_20261114T165437Z_e657deb3 run finished status=SUCCESS totals={'rows_read': 1033, 'rows_loaded': 1000, 'rows_skipped_existing': 1, 'rows_rejected': 32, 'backdated_loaded': 50, 'pairs_rebuilt': 63, 'balance_rows_written': 1619} error=None
