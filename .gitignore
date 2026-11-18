@@ -4,3 +4,14 @@ __pycache__/
 output/*.db*
 data/large/
 *.egg-info/
+.terraform/
+**/.terraform/
+terraform.tfstate
+terraform.tfstate.*
+crash.log
+rendered-manifests.yaml
+.env
+.env.*
+!.env.example
+node_modules/
+dist/

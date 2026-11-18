@@ -117,3 +117,46 @@ Quantities are whole units; one event stream is the source of truth (no cost/val
 
 ## Design / trade-off note
 See [`docs/DESIGN.md`](docs/DESIGN.md).
+
+## Additive Halcer Idea Board platform
+
+The requested AI-first Idea Board implementation lives in
+[`platform/`](platform/README.md) so this repository's inventory pipeline
+remains backward-compatible. It includes a FastAPI/PostgreSQL backend, React
+frontend, Docker Compose, Kubernetes manifests, provider-specific Terraform
+modules, AI safety boundaries, monitoring starter files, and CI workflow.
+
+### Platform quick start
+
+```powershell
+cd platform
+copy .env.example .env
+# Set POSTGRES_PASSWORD to a local-only value.
+docker compose up --build
+```
+
+Open `http://localhost:5173`; API documentation is at
+`http://localhost:8000/docs`. Docker, PostgreSQL, Kubernetes, AWS and GCP
+validation or deployment require the corresponding local CLI and credentials.
+No cloud infrastructure is provisioned or applied by this repository setup.
+
+Without Docker Desktop, the Compose application cannot be built or started
+locally. The platform may also be run for API/frontend development without
+Docker:
+
+```powershell
+python -m pip install -r platform/backend/requirements.txt
+$env:PYTHONPATH="platform/backend"
+python -m uvicorn app.main:app --app-dir platform/backend --reload
+```
+
+In a second terminal:
+
+```powershell
+cd platform/frontend
+npm ci
+npm run dev
+```
+
+For Terraform, Kubernetes, CI/CD and AI-provider details, see
+[`platform/README.md`](platform/README.md) and [`FINAL_REVIEW.md`](FINAL_REVIEW.md).

@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: idea-board-backend
+  namespace: halcer
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: idea-board-backend

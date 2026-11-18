@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: idea-board-backend
+  namespace: halcer
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: idea-board-backend } }
+  template:
+    metadata: { labels: { app: idea-board-backend } }
+    spec:
+      serviceAccountName: idea-board-backend
+      containers:
+        - name: backend
+          image: ghcr.io/example/halcer-backend:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8000 }]
+          envFrom:
+            - configMapRef: { name: idea-board-config }
+            - secretRef: { name: idea-board-secrets }
+          readinessProbe: { httpGet: { path: /health, port: 8000 }, initialDelaySeconds: 5 }
+          livenessProbe: { httpGet: { path: /health, port: 8000 }, initialDelaySeconds: 15 }
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: idea-board-backend
+  namespace: halcer
+spec:
+  selector: { app: idea-board-backend }
+  ports: [{ port: 8000, targetPort: 8000 }]

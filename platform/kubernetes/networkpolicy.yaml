@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: idea-board-backend
+  namespace: halcer
+spec:
+  podSelector:
+    matchLabels:
+      app: idea-board-backend
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+        - podSelector:
+            matchLabels:
+              app: idea-board-frontend
+      ports:
+        - protocol: TCP
+          port: 8000
+  egress:
+    - {}

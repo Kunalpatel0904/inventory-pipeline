@@ -1,0 +1,1 @@
+{"title":"Halcer Idea Board","panels":[{"type":"stat","title":"Application availability","targets":[{"expr":"idea_board_up"}]}],"schemaVersion":39}

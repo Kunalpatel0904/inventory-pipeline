@@ -1,0 +1,191 @@
+name: halcer-platform
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+  packages: write
+
+env:
+  BACKEND_IMAGE: ghcr.io/${{ github.repository }}/halcer-backend
+  FRONTEND_IMAGE: ghcr.io/${{ github.repository }}/halcer-frontend
+
+jobs:
+  test-backend:
+    if: github.event_name != 'issue_comment' || (github.event.issue.pull_request && startsWith(github.event.comment.body, '/deploy-preview'))
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: platform/backend } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - run: pytest -q
+
+  test-frontend:
+    if: github.event_name != 'issue_comment'
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: platform/frontend } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: platform/frontend/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+  validate-manifests:
+    if: github.event_name != 'issue_comment'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+        with: { version: v1.31.0 }
+      - run: kubectl kustomize platform/kubernetes > rendered-manifests.yaml
+
+  build:
+    needs: [test-backend, test-frontend, validate-manifests]
+    if: github.event_name != 'issue_comment'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: platform/backend
+          tags: halcer-backend:${{ github.sha }}
+          load: true
+      - uses: docker/build-push-action@v6
+        with:
+          context: platform/frontend
+          tags: halcer-frontend:${{ github.sha }}
+          load: true
+      - uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: halcer-backend:${{ github.sha }}
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+      - uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: halcer-frontend:${{ github.sha }}
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+
+  publish-images:
+    needs: build
+    if: github.event_name == 'push' && vars.PUBLISH_IMAGES == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: platform/backend
+          push: true
+          tags: ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: platform/frontend
+          push: true
+          tags: ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+
+  deploy:
+    needs: publish-images
+    if: github.event_name == 'push' && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+        with: { version: v1.31.0 }
+      # Configure cloud-specific OIDC login and KUBECONFIG in this environment.
+      - name: Deploy and run deterministic health gates
+        env:
+          HEALTH_URL: ${{ vars.HEALTH_URL }}
+        run: |
+          set -euo pipefail
+          kubectl apply -k platform/kubernetes
+          kubectl set image deployment/idea-board-backend "backend=${BACKEND_IMAGE}:${GITHUB_SHA}" -n halcer
+          kubectl set image deployment/idea-board-frontend "frontend=${FRONTEND_IMAGE}:${GITHUB_SHA}" -n halcer
+          if ! kubectl rollout status deployment/idea-board-backend -n halcer --timeout=180s; then
+            kubectl rollout undo deployment/idea-board-backend -n halcer || true
+            exit 1
+          fi
+          if [ -n "$HEALTH_URL" ]; then
+            curl --fail --retry 5 --retry-delay 5 "$HEALTH_URL"
+          else
+            echo "HEALTH_URL is not configured; cluster rollout was the only health gate."
+          fi
+      - name: Publish deployment summary
+        if: always()
+        run: |
+          {
+            echo "## Halcer deployment"
+            echo "- Commit: \`${GITHUB_SHA}\`"
+            echo "- Environment: production"
+            echo "- Rollback: deterministic rollout gate only"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  analyze-deployment-failure:
+    needs: deploy
+    if: needs.deploy.result == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain deterministic failure boundary
+        run: |
+          echo "Deployment failed a deterministic rollout or health check."
+          echo "Use the backend deployment-analysis endpoint with redacted logs for an AI summary."
+
+  deploy-preview:
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/deploy-preview')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ github.event.issue.number }}/head
+      - name: Validate requester
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTER: ${{ github.event.comment.user.login }}
+        run: |
+          set -euo pipefail
+          permission="$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${REQUESTER}/permission" --jq .permission)"
+          case "$permission" in
+            admin|maintain|write) ;;
+            *) echo "Requester lacks write permission"; exit 1 ;;
+          esac
+      - name: Generate and validate preview configuration
+        working-directory: platform/backend
+        run: |
+          python -m pip install -r requirements.txt
+          PYTHONPATH=. python -c "from app.ai import generate_infrastructure_config; print(generate_infrastructure_config('cost-sensitive staging').model_dump_json())"
+      - name: Safe preview boundary
+        run: |
+          echo "No arbitrary PR commands are executed."
+          echo "Actual preview deployment requires PREVIEW_DEPLOY_ENABLED, registry, cluster, DNS, and secret configuration."
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: 'Preview request validated and configuration generated. Deployment remains disabled until the repository preview environment is configured.'
+            })

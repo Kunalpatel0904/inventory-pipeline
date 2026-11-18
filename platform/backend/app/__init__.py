@@ -1,0 +1,1 @@
+"""Halcer Idea Board backend."""

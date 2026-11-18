@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: idea-board-frontend
+  namespace: halcer
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: idea-board-frontend } }
+  template:
+    metadata: { labels: { app: idea-board-frontend } }
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/example/halcer-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8080 }]
+          readinessProbe: { httpGet: { path: /, port: 8080 } }
+          livenessProbe: { httpGet: { path: /, port: 8080 } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+          volumeMounts:
+            - { name: nginx-cache, mountPath: /var/cache/nginx }
+            - { name: nginx-tmp, mountPath: /tmp }
+      volumes:
+        - { name: nginx-cache, emptyDir: {} }
+        - { name: nginx-tmp, emptyDir: {} }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: idea-board-frontend
+  namespace: halcer
+spec:
+  selector: { app: idea-board-frontend }
+  ports: [{ port: 80, targetPort: 8080 }]
